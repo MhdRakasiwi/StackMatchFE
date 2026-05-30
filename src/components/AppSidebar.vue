@@ -26,7 +26,8 @@ const modalQuery = ref<string>('')
 const activeIndex = ref<number>(0)
 const modalInputRef = ref<HTMLInputElement | null>(null)
 
-const emit = defineEmits(['collapse'])
+const props = defineProps<{ mobileOpen?: boolean }>()
+const emit = defineEmits(['collapse', 'close'])
 
 const refreshHistory = () => {
   history.value = getHistory() as HistoryItem[]
@@ -96,6 +97,7 @@ const toggleDark = () => {
 const handleSelectHistory = (item) => {
   searchStore.triggerSearch(item.query, item.tag)
   router.push('/')
+  emit('close')
 }
 
 const handleRemoveHistory = (index) => {
@@ -117,6 +119,7 @@ const handleLogout = async () => {
 const handleNewChat = () => {
   searchStore.newChat()
   router.push('/')
+  emit('close')
 }
 
 const handleFocusSearch = () => {
@@ -209,7 +212,7 @@ const handleGlobalShortcut = (e) => {
 </script>
 
 <template>
-  <aside class="app-sidebar" :class="{ collapsed: isCollapsed }">
+  <aside class="app-sidebar" :class="{ collapsed: isCollapsed, 'mobile-open': props.mobileOpen }">
     <!-- Header: Logo & Toggle -->
     <div class="sidebar-header" :class="{ 'collapsed-header': isCollapsed }">
       <div class="logo-wrap" v-if="!isCollapsed">
@@ -251,7 +254,7 @@ const handleGlobalShortcut = (e) => {
         <span v-if="!isCollapsed">Search</span>
       </button>
 
-      <RouterLink to="/collections" class="btn-action-item" title="Koleksi Saya">
+      <RouterLink to="/collections" class="btn-action-item" title="Koleksi Saya" @click="emit('close')">
         <i class="fa-solid fa-bookmark"></i>
         <span v-if="!isCollapsed">Koleksi Saya</span>
       </RouterLink>
@@ -427,6 +430,60 @@ const handleGlobalShortcut = (e) => {
 
 .app-sidebar.collapsed {
   width: 56px;
+}
+
+/* ============================
+   MOBILE DRAWER
+   ============================ */
+@media (max-width: 768px) {
+  .app-sidebar {
+    /* Reset collapsed width — always full on mobile */
+    width: 280px !important;
+    top: 0;
+    /* Start hidden off-screen to the left */
+    transform: translateX(-100%);
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s ease;
+    box-shadow: none;
+    z-index: 1000;
+  }
+
+  .app-sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Force uncollapsed look on mobile */
+  .app-sidebar.collapsed .btn-new-chat,
+  .app-sidebar.collapsed .btn-action-item {
+    justify-content: flex-start;
+    padding: 10px 12px;
+  }
+
+  .app-sidebar .logo-wrap {
+    display: flex !important;
+  }
+
+  .app-sidebar .logo-text {
+    display: inline !important;
+  }
+
+  .app-sidebar .user-details {
+    display: flex !important;
+  }
+
+  .app-sidebar .btn-logout-sidebar {
+    display: flex !important;
+  }
+
+  .app-sidebar .history-info {
+    display: flex !important;
+  }
+
+  .app-sidebar .btn-delete-history {
+    opacity: 1;
+  }
 }
 
 /* Header */

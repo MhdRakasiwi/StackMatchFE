@@ -252,10 +252,16 @@ const features = [
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
 }
 
 .navbar-brand {
@@ -284,6 +290,17 @@ const features = [
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .navbar-actions {
+    gap: 8px;
+  }
+
+  /* Sembunyikan teks "Daftar" di layar kecil */
+  .btn-secondary {
+    display: none;
+  }
 }
 
 /* Buttons */
@@ -573,6 +590,25 @@ const features = [
   animation: fade-in-up 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   animation-delay: 0.58s;
   will-change: transform, opacity;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 280px;
+    gap: 10px;
+    margin-bottom: 3rem;
+  }
+
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .btn-cta-primary {

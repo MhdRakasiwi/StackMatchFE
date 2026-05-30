@@ -17,6 +17,7 @@ import QuerySuggestions from '../components/QuerySuggestions.vue'
 import TrendingPanel from '../components/TrendingPanel.vue'
 
 const activeTab = ref<'explore' | 'trending'>('explore')
+const isBottomSheetOpen = ref(false)
 
 const searchStore = useSearchStore()
 const {
@@ -248,7 +249,68 @@ onMounted(() => {
         </div>
       </aside>
     </div>
-  </div>
+
+  <!-- FAB: Tombol untuk membuka panel kanan di mobile -->
+  <button
+    class="fab-panel-btn"
+    @click="isBottomSheetOpen = true"
+    aria-label="Buka panel Jelajahi & Trending"
+  >
+    <i class="fa-solid fa-compass"></i>
+  </button>
+
+  <!-- Bottom Sheet Backdrop -->
+  <Transition name="fade">
+    <div
+      v-if="isBottomSheetOpen"
+      class="bottom-sheet-backdrop"
+      @click="isBottomSheetOpen = false"
+    ></div>
+  </Transition>
+
+  <!-- Bottom Sheet Panel -->
+  <Transition name="slide-up">
+    <div v-if="isBottomSheetOpen" class="bottom-sheet">
+      <div class="bottom-sheet-handle-bar"></div>
+      <div class="bottom-sheet-header">
+        <div class="right-tab-header bottom-sheet-tabs">
+          <button
+            class="right-tab-btn"
+            :class="{ active: activeTab === 'explore' }"
+            @click="activeTab = 'explore'"
+          >
+            <i class="fa-solid fa-compass" style="font-size: 11px;"></i>
+            Jelajahi
+          </button>
+          <button
+            class="right-tab-btn"
+            :class="{ active: activeTab === 'trending' }"
+            @click="activeTab = 'trending'"
+          >
+            <i class="fa-solid fa-chart-line" style="font-size: 11px;"></i>
+            Trending
+          </button>
+        </div>
+        <button class="bottom-sheet-close-btn" @click="isBottomSheetOpen = false">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="bottom-sheet-body">
+        <Transition name="tab-fade" mode="out-in">
+          <QuestionExplorer
+            v-if="activeTab === 'explore'"
+            key="explore-mobile"
+            @select="(q) => { handleExplorerSelect(q); isBottomSheetOpen = false }"
+            :activeTag="selectedTag"
+          />
+          <div v-else key="trending-mobile" class="trending-wrap">
+            <TrendingPanel @select="(q) => { handleExplorerSelect(q); isBottomSheetOpen = false }" />
+          </div>
+        </Transition>
+      </div>
+    </div>
+  </Transition>
+</div>
 </template>
 
 <style scoped>
@@ -607,5 +669,123 @@ onMounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* ============================
+   FAB Button (Mobile/Tablet)
+   ============================ */
+.fab-panel-btn {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #6366f1);
+  color: #ffffff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 200;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab-panel-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.55);
+}
+
+/* Bottom Sheet Backdrop */
+.bottom-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 300;
+  backdrop-filter: blur(2px);
+}
+
+/* Bottom Sheet */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-card-bg);
+  border-top: 1px solid var(--color-border);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 301;
+  display: flex;
+  flex-direction: column;
+  max-height: 75vh;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.bottom-sheet-handle-bar {
+  width: 40px;
+  height: 4px;
+  background-color: var(--color-border);
+  border-radius: 2px;
+  margin: 12px auto 0 auto;
+  flex-shrink: 0;
+}
+
+.bottom-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+  flex-shrink: 0;
+}
+
+.bottom-sheet-tabs {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.bottom-sheet-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  margin-left: 8px;
+}
+
+.bottom-sheet-close-btn:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.bottom-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px 16px;
+}
+
+/* Slide-up transition */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(100%);
+}
+
+/* Show FAB only on tablet/mobile */
+@media (max-width: 1024px) {
+  .fab-panel-btn {
+    display: flex;
+  }
 }
 </style>
