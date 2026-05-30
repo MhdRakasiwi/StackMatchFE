@@ -30,7 +30,7 @@ const totalCount = computed(() =>
 
 <template>
   <div class="tag-selector-wrap">
-    <span class="selector-label">Filter Tag:</span>
+    <span class="selector-label">Pilih Bahasa Pemgrograman:</span>
     <div class="pill-container">
       <button
         class="tag-pill"

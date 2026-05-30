@@ -211,16 +211,18 @@ const copyToClipboard = async () => {
         </button>
       </div>
 
-      <button class="btn-action" @click="showSaveModal = true">
-        <i class="fa-solid fa-bookmark" :style="{ color: isSaved ? 'var(--color-primary)' : 'inherit', marginRight: '6px' }"></i>
-        <span :style="{ fontWeight: isSaved ? 'bold' : 'normal' }">{{ isSaved ? 'Tersimpan' : 'Simpan' }}</span>
-      </button>
+      <div class="btn-group-right">
+        <button class="btn-action" @click="showSaveModal = true">
+          <i class="fa-solid fa-bookmark" :style="{ color: isSaved ? 'var(--color-primary)' : 'inherit', marginRight: '6px' }"></i>
+          <span :style="{ fontWeight: isSaved ? 'bold' : 'normal' }">{{ isSaved ? 'Tersimpan' : 'Simpan' }}</span>
+        </button>
 
-      <button class="btn-action" @click="copyToClipboard">
-        <i v-if="copySuccess" class="fa-solid fa-check" style="margin-right: 6px;"></i>
-        <i v-else class="fa-solid fa-copy" style="margin-right: 6px;"></i>
-        <span>{{ copySuccess ? 'Tersalin!' : 'Salin' }}</span>
-      </button>
+        <button class="btn-action" @click="copyToClipboard">
+          <i v-if="copySuccess" class="fa-solid fa-check" style="margin-right: 6px;"></i>
+          <i v-else class="fa-solid fa-copy" style="margin-right: 6px;"></i>
+          <span>{{ copySuccess ? 'Tersalin!' : 'Salin' }}</span>
+        </button>
+      </div>
     </div>
 
     <div
@@ -361,6 +363,12 @@ const copyToClipboard = async () => {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.btn-group-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .language-select {

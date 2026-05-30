@@ -202,7 +202,7 @@ onMounted(() => {
 
         <!-- Initial state: belum pernah search -->
         <div v-if="!hasSearched && !(isLoading || isBatchLoading)" class="state-initial">
-          <p class="empty-icon"><i class="fa-solid fa-bolt" style="font-size: 3rem; color: var(--color-primary);"></i></p>
+          <p class="empty-icon"><i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: var(--color-primary);"></i></p>
           <p class="initial-title">Temukan pertanyaan yang relevan</p>
           <p class="initial-sub">
             Masukkan pertanyaan kamu dan StackMatch akan merekomendasikan pertanyaan serupa dari

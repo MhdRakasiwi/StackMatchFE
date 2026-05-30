@@ -94,6 +94,7 @@ const toggleCollapse = () => {
   border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-lg, 12px);
   padding: 1.25rem;
+  margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;

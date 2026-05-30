@@ -22,9 +22,9 @@ img, svg {
   --color-border: #e0e0e0;
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
-  --color-score-fusion: #2563eb;
-  --color-score-tfidf: #16a34a;
-  --color-score-sbert: #7c3aed;
+  --color-score-fusion: #378ADD;
+  --color-score-tfidf: #639922;
+  --color-score-sbert: #7F77DD;
   --color-success: #16a34a;
   --color-warning: #d97706;
   --color-danger: #dc2626;
@@ -49,9 +49,9 @@ img, svg {
   --color-border: #2a2a2a;
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
-  --color-score-fusion: #3b82f6;
-  --color-score-tfidf: #22c55e;
-  --color-score-sbert: #a855f7;
+  --color-score-fusion: #378ADD;
+  --color-score-tfidf: #639922;
+  --color-score-sbert: #7F77DD;
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
