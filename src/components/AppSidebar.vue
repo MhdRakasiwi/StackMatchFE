@@ -18,6 +18,16 @@ const router = useRouter()
 const { getHistory, removeHistory, clearHistory } = useHistory()
 
 const isCollapsed = ref<boolean>(false)
+const isMobile = ref<boolean>(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768
+}
+
+const isSidebarCollapsed = computed(() => {
+  return isCollapsed.value && !isMobile.value
+})
+
 const history = ref<HistoryItem[]>([])
 const isDark = ref<boolean>(false)
 
@@ -34,6 +44,9 @@ const refreshHistory = () => {
 }
 
 onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+
   // Load collapse state
   const savedCollapse = localStorage.getItem('sm_sidebar_collapsed')
   isCollapsed.value = savedCollapse === 'true'
@@ -59,6 +72,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalShortcut)
+  window.removeEventListener('resize', checkMobile)
 })
 
 // Watch search store refresh trigger to update history in real-time
@@ -212,14 +226,15 @@ const handleGlobalShortcut = (e) => {
 </script>
 
 <template>
-  <aside class="app-sidebar" :class="{ collapsed: isCollapsed, 'mobile-open': props.mobileOpen }">
+  <aside class="app-sidebar" :class="{ collapsed: isSidebarCollapsed, 'mobile-open': props.mobileOpen }">
     <!-- Header: Logo & Toggle -->
-    <div class="sidebar-header" :class="{ 'collapsed-header': isCollapsed }">
-      <div class="logo-wrap" v-if="!isCollapsed">
+    <div class="sidebar-header" :class="{ 'collapsed-header': isSidebarCollapsed }">
+      <div class="logo-wrap" v-if="!isSidebarCollapsed">
         <img src="../assets/logo2.png" alt="Logo" class="logo-img-sidebar expanded-logo-img" />
         <span class="logo-text">StackMatch</span>
       </div>
       <button
+        v-if="!isMobile"
         class="btn-toggle-collapse"
         @click="toggleCollapse"
         title="Sembunyikan/Tampilkan Sidebar"
@@ -246,23 +261,23 @@ const handleGlobalShortcut = (e) => {
     <div class="sidebar-actions">
       <button class="btn-new-chat" @click="handleNewChat" title="Mulai Rekomendasi Baru">
         <i class="fa-solid fa-plus"></i>
-        <span v-if="!isCollapsed">New chat</span>
+        <span v-if="!isSidebarCollapsed">New chat</span>
       </button>
 
       <button class="btn-action-item" @click="handleFocusSearch" title="Cari Rekomendasi">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <span v-if="!isCollapsed">Search</span>
+        <span v-if="!isSidebarCollapsed">Search</span>
       </button>
 
       <RouterLink to="/collections" class="btn-action-item" title="Koleksi Saya" @click="emit('close')">
         <i class="fa-solid fa-bookmark"></i>
-        <span v-if="!isCollapsed">Koleksi Saya</span>
+        <span v-if="!isSidebarCollapsed">Koleksi Saya</span>
       </RouterLink>
     </div>
 
     <!-- History / Recents Section -->
     <div class="sidebar-history-section">
-      <div class="history-header" v-if="!isCollapsed">
+      <div class="history-header" v-if="!isSidebarCollapsed">
         <span class="history-title">Recents</span>
         <button
           v-if="history.length > 0"
@@ -275,7 +290,7 @@ const handleGlobalShortcut = (e) => {
       </div>
 
       <div class="history-scroll-container">
-        <div v-if="history.length === 0 && !isCollapsed" class="history-empty">
+        <div v-if="history.length === 0 && !isSidebarCollapsed" class="history-empty">
           Belum ada riwayat
         </div>
 
@@ -284,7 +299,7 @@ const handleGlobalShortcut = (e) => {
             v-for="(item, index) in history"
             :key="index"
             class="history-item"
-            :class="{ 'collapsed-item': isCollapsed }"
+            :class="{ 'collapsed-item': isSidebarCollapsed }"
           >
             <div
               class="history-item-clickable"
@@ -292,13 +307,13 @@ const handleGlobalShortcut = (e) => {
               :title="item.query"
             >
               <i class="history-icon fa-regular fa-comment"></i>
-              <div class="history-info" v-if="!isCollapsed">
+              <div class="history-info" v-if="!isSidebarCollapsed">
                 <span class="history-query-text">{{ item.query }}</span>
                 <span class="history-time-text" v-if="item.tag">[{{ item.tag }}]</span>
               </div>
             </div>
             <button
-              v-if="!isCollapsed"
+              v-if="!isSidebarCollapsed"
               class="btn-delete-history"
               @click.stop="handleRemoveHistory(index)"
               title="Hapus riwayat ini"
@@ -322,7 +337,7 @@ const handleGlobalShortcut = (e) => {
           <i v-if="isDark" class="fa-solid fa-sun"></i>
           <i v-else class="fa-solid fa-moon"></i>
         </span>
-        <span v-if="!isCollapsed">{{ isDark ? 'Mode Terang' : 'Mode Gelap' }}</span>
+        <span v-if="!isSidebarCollapsed">{{ isDark ? 'Mode Terang' : 'Mode Gelap' }}</span>
       </button>
 
       <!-- User Profile -->
@@ -331,7 +346,7 @@ const handleGlobalShortcut = (e) => {
           {{ (authStore.user?.username || 'U').substring(0, 1).toUpperCase() }}
         </div>
 
-        <div class="user-details" v-if="!isCollapsed">
+        <div class="user-details" v-if="!isSidebarCollapsed">
           <span class="user-name" :title="authStore.user?.username || 'User'">
             {{ authStore.user?.username || 'User' }}
           </span>
